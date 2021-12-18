@@ -8,6 +8,9 @@
 import Foundation
 
 extension Parser {
+    /**
+    A zero-or-one node.
+     */
     public class ZeroOrOneNode: ASTNode {
         /**
          Create a new `?` closure node.

@@ -22,8 +22,10 @@ public class Lexer {
      Tokenize the input string
      
      - Throws: `RegExSyntaxError` if there are unmatched delimiters
+     - Returns: a list of `Token`s resulted from tokenizing the input (discardable, also accessible from `Lexer.tokens`
      */
-    public func tokenize() throws {
+    @discardableResult
+    public func tokenize() throws -> Array<Token> {
         var inputStack: Array<Token> = []
         for i in 0...self.input.count - 1 {
             let currToken: Token = Token.createToken(input: self.input[i])
@@ -63,6 +65,7 @@ public class Lexer {
             
         }
         self.insertConcat()
+        return self.tokens
     }
     /**
      Insert the concatenation operators

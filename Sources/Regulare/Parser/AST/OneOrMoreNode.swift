@@ -8,6 +8,9 @@
 import Foundation
 
 extension Parser {
+    /**
+     A plus closure node
+     */
     public class OneOrMoreNode: ASTNode {
         /**
          Create a new plus closure node.

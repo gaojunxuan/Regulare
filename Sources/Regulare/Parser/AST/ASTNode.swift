@@ -9,6 +9,10 @@ import Foundation
 
 /// An AST Unit
 extension Parser {
+    /**
+     The parent class of all types of `ASTNode`s. Subclasses inherited from this class should override `getChildren` method
+     and the constructor as necessary.
+     */
     public class ASTNode {
         /// Left child
         let left: ASTNode?

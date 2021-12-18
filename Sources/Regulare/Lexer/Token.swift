@@ -11,7 +11,7 @@ import Foundation
 /// Type of token
 public enum TokenType {
     /// Empty string
-    case lambda
+    case epsilon
     /// Character
     case char
     /// Quantifier: `*` and  `+`

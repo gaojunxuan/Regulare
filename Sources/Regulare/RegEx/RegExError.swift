@@ -10,7 +10,7 @@ import Foundation
 public class RegExError: Error {
     let message: String
 
-    init(_ message: String) {
+    internal init(_ message: String) {
         self.message = message
     }
 

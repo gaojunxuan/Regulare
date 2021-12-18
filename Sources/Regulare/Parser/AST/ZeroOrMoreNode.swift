@@ -8,6 +8,9 @@
 import Foundation
 
 extension Parser {
+    /**
+     A Kleene star node
+     */
     public class ZeroOrMoreNode: ASTNode {
         /**
          Create a new Kleene star closure node.

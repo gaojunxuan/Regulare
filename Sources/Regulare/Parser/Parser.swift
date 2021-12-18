@@ -21,6 +21,15 @@ struct Parser {
         self.tokens = tokens
     }
     
+    /**
+     Parse the tokens into an abstract syntax tree.
+     
+     - Throws: `RegExParserError` when either the operator stack or the operand stack becomes
+                empty before the algorithm finishes processing the all tokens. It may also throw this error
+                when th algorithm is not able to create an `ASTNode` associated with the token being
+                read. This is usually due to an unsupported type of token.
+     - Returns: an `ASTNode` that is the root of the abstract syntax tree
+     */
     public func parse() throws -> ASTNode {
         // operator and operand stack
         var op: Array<Token> = []
@@ -35,25 +44,30 @@ struct Parser {
             } else if (currToken.tag == TokenType.rightDelimiter) {
                 if (currToken.value == ")") {
                     guard var opTop = op.pop() else {
-                        throw RegExError("Error during parsing. Empty operator stack")
+                        throw RegExParserError(.emptyOperatorStack)
                     }
+                    // Keep popping from the operator stack until an open parenthesis is found
                     while (opTop.value != "(" && !op.isEmpty) {
                         guard let astNode: ASTNode = Parser.createASTNode(op: opTop, operandStack: &operand) else {
-                            throw RegExError("Error during parsing. Invalid ASTNode.")
+                            throw RegExParserError(.failedASTNodeCreation)
                         }
                         operand.push(astNode)
-                        opTop = op.pop()!
+                        if let t = op.pop() {
+                            opTop = t
+                        } else {
+                            throw RegExParserError(.emptyOperatorStack)
+                        }
                         
                     }
                 }
             } else if (currToken.tag == TokenType.quantifier || currToken.tag == TokenType.op) {
                 while (!op.isEmpty) {
                     guard let opTop = op.pop() else {
-                        throw RegExError("Error during parsing. Empty operator stack.")
+                        throw RegExParserError(.emptyOperatorStack)
                     }
                     if (opTop.value != "(" && ((PREC[currToken.value] ?? 100) <= (PREC[opTop.value] ?? -1))) {
                         guard let astNode: ASTNode = Parser.createASTNode(op: opTop, operandStack: &operand) else {
-                            throw RegExError("Error during parsing. Invalid ASTNode.")
+                            throw RegExParserError(.failedASTNodeCreation)
                         }
                         operand.push(astNode)
                     } else {
@@ -69,15 +83,15 @@ struct Parser {
         // Output the remaining operands
         while (!op.isEmpty) {
             guard let opTop = op.pop() else {
-                throw RegExError("Error during parsing. Empty operator stack.")
+                throw RegExParserError(.emptyOperatorStack)
             }
             guard let astNode: ASTNode = Parser.createASTNode(op: opTop, operandStack: &operand) else {
-                throw RegExError("Error during parsing. Empty operator stack.")
+                throw RegExParserError(.emptyOperatorStack)
             }
             operand.push(astNode)
         }
         guard let operandTop = operand.pop() else {
-            throw RegExError("Error during parsing")
+            throw RegExParserError(.emptyOperandStack)
         }
         return operandTop
     }

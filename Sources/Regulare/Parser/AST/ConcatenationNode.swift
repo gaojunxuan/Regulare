@@ -8,6 +8,9 @@
 import Foundation
 
 extension Parser {
+    /**
+     A concatenation node
+     */
     public class ConcatenationNode: ASTNode {
         /**
          Create a new concatenation node.
