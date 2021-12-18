@@ -13,29 +13,29 @@
             let lexer = Lexer("Hello(World)*")
             do {
                 try lexer.tokenize()
-                let expected: Array<Lexer.Token> = [
-                    Lexer.Token.createToken(input: "H"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "e"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "l"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "l"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "o"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "("),
-                    Lexer.Token.createToken(input: "W"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "o"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "r"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "l"),
-                    Lexer.Token.createConcatToken(),
-                    Lexer.Token.createToken(input: "d"),
-                    Lexer.Token.createToken(input: ")"),
-                    Lexer.Token.createToken(input: "*"),
+                let expected: Array<Token> = [
+                    Token.createToken(input: "H"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "e"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "l"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "l"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "o"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "("),
+                    Token.createToken(input: "W"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "o"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "r"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "l"),
+                    Token.createConcatToken(),
+                    Token.createToken(input: "d"),
+                    Token.createToken(input: ")"),
+                    Token.createToken(input: "*"),
                 ]
                 XCTAssertEqual(lexer.tokens, expected)
             } catch {
@@ -55,6 +55,20 @@
                     let casted = error as? RegExSyntaxError
                     XCTAssertEqual(casted?.message, "Syntax error at 0")
                 }
+            }
+        }
+        
+        func testParser() {
+            let lexer = Lexer("Hello(World)*")
+            do {
+                try lexer.tokenize()
+                let parser = Parser(lexer.tokens)
+                let ast = try parser.parse()
+                var prettyPrinted = ""
+                ast.astPrettyPrint(strIn: &prettyPrinted, prefix: "", childrenPrefix: "")
+                print(prettyPrinted)
+            } catch {
+                XCTFail()
             }
         }
     }
