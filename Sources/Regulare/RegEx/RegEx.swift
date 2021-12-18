@@ -8,5 +8,4 @@
 import Foundation
 
 /// A `struct` that represents a regular expression.
-/// Includes parser and compiler for regex
 struct RegEx {}

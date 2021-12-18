@@ -10,11 +10,51 @@
         }
         
         func testLexer() {
-            let lexer = RegEx.Lexer("    1111010  test")
-            let token = lexer.readToken()
-            let token2 = lexer.readToken()
-            debugPrint(token)
-            XCTAssertEqual(token, RegEx.Token(tag: .num, value: "1111010"))
-            XCTAssertEqual(token2, RegEx.Token(tag: .str, value: "test"))
+            let lexer = Lexer("Hello(World)*")
+            do {
+                try lexer.tokenize()
+                let expected: Array<Lexer.Token> = [
+                    Lexer.Token.createToken(input: "H"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "e"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "l"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "l"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "o"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "("),
+                    Lexer.Token.createToken(input: "W"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "o"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "r"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "l"),
+                    Lexer.Token.createConcatToken(),
+                    Lexer.Token.createToken(input: "d"),
+                    Lexer.Token.createToken(input: ")"),
+                    Lexer.Token.createToken(input: "*"),
+                ]
+                XCTAssertEqual(lexer.tokens, expected)
+            } catch {
+                XCTFail()
+            }
+        }
+        
+        func testLexerUnpairedParentheses() {
+            let lexer = Lexer("(()")
+            let lexer2 = Lexer(")((")
+            do {
+                XCTAssertThrowsError(try lexer.tokenize()) { error in
+                    let casted = error as? RegExSyntaxError
+                    XCTAssertEqual(casted?.message, "Syntax error at 2")
+                }
+                XCTAssertThrowsError(try lexer2.tokenize()) { error in
+                    let casted = error as? RegExSyntaxError
+                    XCTAssertEqual(casted?.message, "Syntax error at 0")
+                }
+            }
         }
     }

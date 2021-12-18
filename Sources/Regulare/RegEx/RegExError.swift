@@ -7,26 +7,14 @@
 
 import Foundation
 
-struct LexerError: Error, LocalizedError {
+public class RegExError: Error {
     let message: String
-    
-    init(_ message: String) {
-        self.message = message
-    }
-    
-    public var errorDescription: String? {
-        "Lexer error: \(message)"
-    }
-}
 
-struct ParserError: Error, LocalizedError {
-    let message: String
-    
     init(_ message: String) {
         self.message = message
     }
-    
-    public var errorDescription: String? {
-        "Parser error: \(message)"
+
+    public var localizedDescription: String {
+        return message
     }
 }
