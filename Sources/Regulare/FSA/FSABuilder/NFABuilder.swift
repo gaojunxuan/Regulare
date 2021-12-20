@@ -34,7 +34,7 @@ public struct NFABuilder {
     
     public func addState() -> Int {
         let newIdx = self.nfa.states.count
-        let newState = NFAState(newIdx)
+        let newState = NFAState()
         self.nfa.states.append(newState)
         return newIdx
     }

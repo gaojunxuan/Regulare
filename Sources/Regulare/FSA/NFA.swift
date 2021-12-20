@@ -13,10 +13,8 @@ postfix operator ¿
 
 public class NFAState: FSAState, Hashable {
     private var transitionTable: Dictionary<String, Set<NFAState>> = [:]
-    private let stateID: Int
     
-    public init(_ id: Int, _ tr: Dictionary<String, Set<NFAState>> = [:]) {
-        self.stateID = id
+    public init(_ tr: Dictionary<String, Set<NFAState>> = [:]) {
         self.transitionTable = tr
     }
     
@@ -45,11 +43,11 @@ public class NFAState: FSAState, Hashable {
     }
     
     public static func == (lhs: NFAState, rhs: NFAState) -> Bool {
-        return lhs.stateID == rhs.stateID
+        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
     }
     
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(self.stateID)
+        hasher.combine(ObjectIdentifier(self))
         hasher.combine(self.transitionTable)
     }
 }
@@ -96,6 +94,7 @@ public class NFA: FSA {
         var reachable: Set<NFAState> = []
         // perform DFS
         var stateStack: Array<NFAState> = []
+        stateStack.push(state)
         while (!stateStack.isEmpty) {
             guard let top = stateStack.pop() else {
                 throw RegExError("NFA error")
@@ -147,10 +146,16 @@ public class NFA: FSA {
      - Parameters: the input string
      */
     public func accept(str: String) -> Bool {
-        if (!self.isEmpty) {
-            return self.transition(from: self.startState!, str: str).contains(self.endState!)
+        do {
+            if (!self.isEmpty) {
+                return try self.extendedTransition(from: self.startState!, str: str).contains(self.endState!)
+            }
+            else {
+                return false
+            }
+        } catch {
+            return false
         }
-        return false
     }
     
     public var isEmpty: Bool {
